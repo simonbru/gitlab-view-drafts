@@ -25,11 +25,16 @@ function Modal({ title, children, onClose }) {
     }
   }
 
+  const [modalClass, setModalClass] = useState("");
+  useEffect(() => {
+    setModalClass("show");
+  }, []);
+
   return html`
     <div style="position: absolute; z-index: 1040">
       <div
         role="dialog"
-        class="modal fade show gl-modal"
+        class=${`modal gl-modal fade ${modalClass}`}
         style="display: block"
         aria-modal="true"
         ref=${modalContainerRef}
@@ -67,10 +72,10 @@ function Modal({ title, children, onClose }) {
             <footer class="modal-footer gl-bg-gray-10 gl-p-5">
               <button
                 type="button"
-                class="btn js-modal-action-primary btn-default btn-md gl-button"
+                class="btn btn-default gl-button"
                 onClick=${onClose}
               >
-                <span class="gl-button-text">Close</span>
+                Close
               </button>
             </footer>
           </div>
@@ -83,7 +88,6 @@ function Modal({ title, children, onClose }) {
 }
 
 function Draft({ data, onDelete }) {
-
   function handleDelete() {
     if (confirm("Do you really want to delete this comment?")) {
       onDelete();
