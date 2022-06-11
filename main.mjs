@@ -8,6 +8,14 @@ import {
 
 console.log("coucou start");
 
+function getCsrfToken() {
+  const token = document.querySelector('meta[name="csrf-token"]').content;
+  if (!token) {
+    throw new Error("CSRF token not found");
+  }
+  return token;
+}
+
 function Modal({ title, children, onClose }) {
   const modalContainerRef = useRef();
 
@@ -74,7 +82,14 @@ function Modal({ title, children, onClose }) {
   `;
 }
 
-function Draft({ data }) {
+function Draft({ data, onDelete }) {
+
+  function handleDelete() {
+    if (confirm("Do you really want to delete this comment?")) {
+      onDelete();
+    }
+  }
+
   return html`
     <article class="draft-note-component note-wrapper border rounded my-4">
       <!-- TODO: fix lazy images -->
@@ -86,6 +101,7 @@ function Draft({ data }) {
         <button
           type="button"
           class="btn btn-danger btn-md gl-button btn-danger-secondary"
+          onClick=${handleDelete}
         >
           Delete comment
         </button>
@@ -114,11 +130,28 @@ function DraftModal() {
       .then((data) => setDrafts(data));
   }, []);
 
+  async function deleteDraft(draftId) {
+    await fetch(`/simonbru/mess/-/merge_requests/1/drafts/${draftId}`, {
+      method: "DELETE",
+      headers: {
+        "X-CSRF-Token": getCsrfToken(),
+      },
+    });
+    // TODO: check response status
+    setDrafts(drafts.filter((d) => d.id !== draftId));
+  }
+
   return html`
     <${Modal} title="Draft comments" onClose=${() => setIsOpen(false)}>
       ${drafts === null
         ? html`<em>Loading...</em>`
-        : drafts.map((draft) => html`<${Draft} data=${draft} />`)}
+        : drafts.map(
+            (draft) =>
+              html`<${Draft}
+                data=${draft}
+                onDelete=${() => deleteDraft(draft.id)}
+              />`
+          )}
     <//>
   `;
 }
