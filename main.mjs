@@ -100,11 +100,20 @@ function Draft({ data, onDelete }) {
     }
   }
 
+  const contentRef = useRef();
+
+  useEffect(() => {
+    // Fix lazy images never loading
+    contentRef.current.querySelectorAll("[data-src]").forEach((lazyElem) => {
+      lazyElem.src = lazyElem.dataset.src;
+    });
+  }, [data.note_html]);
+
   return html`
     <article class="draft-note-component note-wrapper border rounded my-4">
-      <!-- TODO: fix lazy images -->
       <div
         class="md mb-3"
+        ref=${contentRef}
         dangerouslySetInnerHTML=${{ __html: data.note_html }}
       ></div>
       <div class="d-flex">
