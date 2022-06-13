@@ -93,7 +93,7 @@ function Modal({ title, children, onClose }) {
   `;
 }
 
-function Draft({ data, onDelete }) {
+function Draft({ data, onDelete, onPublish }) {
   function handleDelete() {
     if (confirm("Do you really want to delete this comment?")) {
       onDelete();
@@ -124,7 +124,11 @@ function Draft({ data, onDelete }) {
         >
           Delete comment
         </button>
-        <button type="button" class="btn gl-ml-3 btn-default btn-md gl-button">
+        <button
+          type="button"
+          class="btn gl-ml-3 btn-default btn-md gl-button"
+          onClick=${() => onPublish()}
+        >
           Add comment now
         </button>
       </div>
@@ -148,10 +152,10 @@ function DraftModal() {
     try {
       const response = await fetch(`${getBaseUrl()}/drafts`);
       const data = await response.json();
-      setDrafts({ data, loading: false });
+      setDrafts({ ...drafts, data, loading: false });
     } catch (error) {
       console.error(error);
-      setDrafts((state) => ({ ...state, loading: false, error }));
+      setDrafts((state) => ({ ...drafts, loading: false, error }));
     }
   }, []);
 
@@ -163,7 +167,27 @@ function DraftModal() {
       },
     });
     if (response.ok) {
-      setDrafts(drafts.data.filter((d) => d.id !== draftId));
+      setDrafts(({ data, ...rest }) => ({
+        ...rest,
+        data: data.filter((d) => d.id !== draftId),
+      }));
+    }
+  }
+
+  async function publishDraft(draftId) {
+    const response = await fetch(`${getBaseUrl()}/drafts/publish`, {
+      method: "POST",
+      body: JSON.stringify({ id: draftId }),
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-Token": getCsrfToken(),
+      },
+    });
+    if (response.ok) {
+      setDrafts(({ data, ...rest }) => ({
+        ...rest,
+        data: data.filter((d) => d.id !== draftId),
+      }));
     }
   }
 
@@ -174,11 +198,14 @@ function DraftModal() {
         : drafts.error
         ? html`<strong>Error</strong>
             <div>${String(drafts.error)}</div>`
+        : drafts.data.length === 0
+        ? html`<em>No draft comments</em>`
         : drafts.data.map(
             (draft) =>
               html`<${Draft}
                 data=${draft}
                 onDelete=${() => deleteDraft(draft.id)}
+                onPublish=${() => publishDraft(draft.id)}
               />`
           )}
     <//>
