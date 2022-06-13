@@ -6,14 +6,20 @@ import {
   render,
 } from "https://cdn.jsdelivr.net/npm/htm@3.1.1/preact/standalone.module.js";
 
-console.log("coucou start");
-
 function getCsrfToken() {
   const token = document.querySelector('meta[name="csrf-token"]').content;
   if (!token) {
     throw new Error("CSRF token not found");
   }
   return token;
+}
+
+function getBaseUrl() {
+  const match = /.*\/merge_requests\/[0-9]+/.exec(location.pathname);
+  if (match === null) {
+    throw Error("Could not find URL for current merge request");
+  }
+  return match[0];
 }
 
 function Modal({ title, children, onClose }) {
@@ -119,37 +125,47 @@ function Draft({ data, onDelete }) {
 
 function DraftModal() {
   const [isOpen, setIsOpen] = useState(true);
-  const [drafts, setDrafts] = useState(null);
+  const [drafts, setDrafts] = useState({
+    data: [],
+    error: null,
+    loading: false,
+  });
 
   if (!isOpen) {
     return null;
   }
 
-  useEffect(() => {
-    // TODO: use dynamic URL
-    fetch("/simonbru/mess/-/merge_requests/1/drafts")
-      // TODO: error handling
-      .then((res) => res.json())
-      .then((res) => (console.log(res), res))
-      .then((data) => setDrafts(data));
+  useEffect(async () => {
+    try {
+      const response = await fetch(`${getBaseUrl()}/drafts`);
+      const data = await response.json();
+      setDrafts({ data, loading: false });
+    } catch (error) {
+      console.error(error);
+      setDrafts((state) => ({ ...state, loading: false, error }));
+    }
   }, []);
 
   async function deleteDraft(draftId) {
-    await fetch(`/simonbru/mess/-/merge_requests/1/drafts/${draftId}`, {
+    const response = await fetch(`${getBaseUrl()}/drafts/${draftId}`, {
       method: "DELETE",
       headers: {
         "X-CSRF-Token": getCsrfToken(),
       },
     });
-    // TODO: check response status
-    setDrafts(drafts.filter((d) => d.id !== draftId));
+    if (response.ok) {
+      setDrafts(drafts.data.filter((d) => d.id !== draftId));
+    }
   }
 
   return html`
     <${Modal} title="Draft comments" onClose=${() => setIsOpen(false)}>
-      ${drafts === null
+      ${drafts.loading
         ? html`<em>Loading...</em>`
-        : drafts.map(
+        : drafts.error
+        ? html`<strong>Error</strong>
+            <div>${String(drafts.error)}</div>`
+        : drafts.data.map(
             (draft) =>
               html`<${Draft}
                 data=${draft}
@@ -165,5 +181,3 @@ export default function main() {
   document.body.appendChild(container);
   render(html`<${DraftModal} />`, container);
 }
-
-console.log("coucou end");
