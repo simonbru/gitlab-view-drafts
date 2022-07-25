@@ -4,7 +4,7 @@ import {
   useEffect,
   useState,
   render,
-} from "https://cdn.jsdelivr.net/npm/htm@3.1.1/preact/standalone.module.js";
+} from "./vendor/htm@3.1.1/preact/standalone.module.js";
 
 function getCsrfToken() {
   const token = document.querySelector('meta[name="csrf-token"]').content;
