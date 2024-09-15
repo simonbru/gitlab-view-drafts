@@ -1,41 +1,45 @@
 ## Dev
 
-### Serve module
+### Local dev with HMR
 ```sh
-serve -l 5000
+npm run dev
 ```
 
-### Execute module
+Bookmarklet:
 
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.src = "http://localhost:5000/main.mjs"; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import "http://localhost:5184/@vite/client"; import main from "http://localhost:5184/src/main.tsx"; main();`; document.body.appendChild(sc); void 0
 ```
 
-### Execute default export from module
+Note: "@vite/client" is useful to show build errors in browser, but HMR works fine without it.
 
-```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "http://localhost:5000/main.mjs"; main();`; document.body.appendChild(sc); void 0
+### Local dev with prod build (and forced re-evaluation)
+
+```sh
+npm run build
+npm run preview
 ```
 
-### Execute default export from module with forced re-evaluation
-
-```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "http://localhost:5000/main.mjs?${Math.random()}"; main();`; document.body.appendChild(sc); void 0
+Bookmarklet:
+```
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import "http://localhost:4184/main.js?${Math.random()}"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```
 
 ## Prod 
 
-### Execute default export from module (github)
+### Execute from github.io (main branch)
 
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://simonbru.github.io/gitlab-view-drafts/main.mjs"; main();`; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://simonbru.github.io/gitlab-view-drafts/dist/main.mjs"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```
 
-### From "dev" branch
+### Execute from github (dev branch)
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://raw.githubusercontent.com/simonbru/gitlab-view-drafts/dev/main.mjs"; main();`; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://raw.githubusercontent.com/simonbru/gitlab-view-drafts/dev/dist/main.mjs"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```
 
+### Execute from jsdelivr (dev branch)
+
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://cdn.jsdelivr.net/gh/simonbru/gitlab-view-drafts@dev/main.mjs"; main();`; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://cdn.jsdelivr.net/gh/simonbru/gitlab-view-drafts@dev/dist/main.mjs"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```

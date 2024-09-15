@@ -1,10 +1,7 @@
-import {
-  useRef,
-  html,
-  useEffect,
-  useState,
-  render,
-} from "./vendor/htm@3.1.1/preact/standalone.module.js";
+import { html } from 'htm/preact';
+import { render } from "preact"
+import { useEffect, useRef, useState } from "preact/compat"
+
 
 function getCsrfToken() {
   const token = document.querySelector('meta[name="csrf-token"]').content;
@@ -217,3 +214,5 @@ export default function main() {
   document.body.appendChild(container);
   render(html`<${DraftModal} />`, container);
 }
+
+globalThis.gitlabViewDrafts = main;
