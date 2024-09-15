@@ -138,7 +138,7 @@ function DraftModal() {
   const [drafts, setDrafts] = useState({
     data: [],
     error: null,
-    loading: false,
+    loading: true,
   });
 
   if (!isOpen) {
