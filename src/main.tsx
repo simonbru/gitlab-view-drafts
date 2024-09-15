@@ -107,7 +107,7 @@ function Draft({ data, onDelete, onPublish }) {
   }, [data.note_html]);
 
   return html`
-    <article class="draft-note-component note-wrapper border rounded my-4">
+    <article class="draft-note-component note-wrapper border rounded my-4 p-2">
       <div
         class="md mb-3"
         ref=${contentRef}
