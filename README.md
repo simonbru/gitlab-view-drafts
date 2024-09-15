@@ -27,19 +27,36 @@ javascript:var sc = document.createElement("script"); sc.type = "module"; sc.inn
 
 ## Prod 
 
-### Execute from github.io (main branch)
+### Execute from github.io
+
+Branch configured in [Pages settings](https://github.com/simonbru/gitlab-view-drafts/settings/pages)
 
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://simonbru.github.io/gitlab-view-drafts/dist/main.mjs"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import "https://simonbru.github.io/gitlab-view-drafts/dist/main.js"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```
 
-### Execute from github (dev branch)
+### Execute from jsdelivr (main branch)
+
+Branches are cached for 12 hours:
+https://www.jsdelivr.com/documentation#id-caching
+
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://raw.githubusercontent.com/simonbru/gitlab-view-drafts/dev/dist/main.mjs"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import "https://cdn.jsdelivr.net/gh/simonbru/gitlab-view-drafts@main/dist/main.js"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```
 
 ### Execute from jsdelivr (dev branch)
 
+Branches are cached for 12 hours:
+https://www.jsdelivr.com/documentation#id-caching
+
 ```javascript
-javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import main from "https://cdn.jsdelivr.net/gh/simonbru/gitlab-view-drafts@dev/dist/main.mjs"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import "https://cdn.jsdelivr.net/gh/simonbru/gitlab-view-drafts@dev/dist/main.js"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
+```
+
+### Execute from github (dev branch)
+
+⚠️ Broken because script is served with content-type "text/plain".
+
+```javascript
+javascript:var sc = document.createElement("script"); sc.type = "module"; sc.innerHTML = `import "https://raw.githubusercontent.com/simonbru/gitlab-view-drafts/dev/dist/main.js"; gitlabViewDrafts();`; document.body.appendChild(sc); void 0
 ```
