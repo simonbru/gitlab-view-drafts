@@ -1,25 +1,6 @@
-// import { html } from "./vendor/htm@3.1.1/dist/htm.mjs";
-// import { render } from "./vendor/preact@10.23.2/dist/preact.mjs"
-// import { useRef, useEffect, useState } from "./vendor/preact@10.23.2/compat/dist/compat.mjs"
-
-elem = document.createElement("script");
-elem.type = "importmap";
-elem.innerHTML = `
-  {
-    "imports": {
-      "preact": "https://esm.sh/preact@10.23.1",
-      "preact/": "https://esm.sh/preact@10.23.1/",
-      "react": "https://esm.sh/preact@10.23.1/compat",
-      "react/": "https://esm.sh/preact@10.23.1/compat/",
-      "react-dom": "https://esm.sh/preact@10.23.1/compat",
-    }
-  }
-`;
-document.head.appendChild(elem);
-
-import { html } from "./vendor/htm@3.1.1/dist/htm.mjs";
+import { html } from 'htm/preact';
 import { render } from "preact"
-import { useRef, useEffect, useState } from "preact/compat"
+import { useEffect, useRef, useState } from "preact/compat"
 
 
 function getCsrfToken() {
@@ -233,3 +214,5 @@ export default function main() {
   document.body.appendChild(container);
   render(html`<${DraftModal} />`, container);
 }
+
+globalThis.gitlabViewDrafts = main;
